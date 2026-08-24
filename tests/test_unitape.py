@@ -5,7 +5,7 @@ import tempfile
 import unittest
 from pathlib import Path
 
-import unitape
+import unitape_core as unitape
 
 
 class UnitApeTests(unittest.TestCase):

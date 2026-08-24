@@ -38,11 +38,15 @@ def iter_python_files(source: Path) -> Iterable[Path]:
 
 
 def parse_classes(source_file: Path) -> list[ast.ClassDef]:
-    """Parse top-level classes without importing or executing the source."""
+    """Parse top-level classes without importing or executing the source.
+
+    UTF-8 files with or without a BOM are accepted. This matters on Windows,
+    where Windows PowerShell 5.1 may emit a UTF-8 BOM when writing text files.
+    """
     try:
-        source_text = source_file.read_text(encoding="utf-8")
+        source_text = source_file.read_text(encoding="utf-8-sig")
     except UnicodeDecodeError:
-        source_text = source_file.read_text(encoding="utf-8", errors="replace")
+        source_text = source_file.read_text(encoding="utf-8-sig", errors="replace")
 
     try:
         tree = ast.parse(source_text, filename=str(source_file))

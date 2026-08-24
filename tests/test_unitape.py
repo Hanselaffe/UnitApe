@@ -19,6 +19,15 @@ class UnitApeTests(unittest.TestCase):
             classes = unitape.parse_classes(source)
             self.assertEqual([node.name for node in classes], ["Example"])
 
+    def test_parse_classes_accepts_utf8_bom(self) -> None:
+        with tempfile.TemporaryDirectory() as directory:
+            source = Path(directory) / "sample_bom.py"
+            source.write_bytes(
+                b"\xef\xbb\xbfclass Example:\n    def run(self):\n        return 1\n"
+            )
+            classes = unitape.parse_classes(source)
+            self.assertEqual([node.name for node in classes], ["Example"])
+
     def test_public_methods_excludes_private(self) -> None:
         node = ast.parse(
             "class Example:\n"
